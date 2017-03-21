@@ -76,6 +76,9 @@
     <ClInclude Include="PixMap24RGB.h" />
     <ClInclude Include="tipos.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="ray.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

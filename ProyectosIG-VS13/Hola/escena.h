@@ -87,18 +87,36 @@ class Rectangulo
 	
 public:
 
-	CTex2 textura;
-	Color4 color;
+	//CTex2 textura;
+//	Color4 color;
 	std::vector<PVec3> vertices, normal;
 	Rectangulo(double ancho, double alto)
 	{
-		PVec3 v0(ancho/2, alto/2, 0.0);
-		PVec3 v1(ancho / 2, -alto / 2, 0.0);
+		PVec3 v0(ancho / 2, -alto / 2, 0.0);
+		PVec3 v1(ancho / 2, alto / 2, 0.0);
 		PVec3 v2(-ancho / 2, alto / 2, 0.0);
-		PVec3 v3(-ancho / 2, -alto / 2, 0.0);
-		vertices = { v0, v1, v2,v3 };
+		PVec3 v3(-ancho / 2, alto / 2, 0.0);
+		PVec3 v4(-ancho / 2, -alto / 2, 0.0);
+		vertices = { v0, v1, v2, v0 , v3, v4};
+		GLfloat Qx, Qy, Qz, Px, Py, Pz;
+
+		Px = v1.x - v0.x;
+		Py = v1.y - v0.y;
+		Pz = v1.z - v0.z;
+		Qx = v2.x - v0.x;
+		Qy = v2.y - v0.y;
+		Qz = v2.z - v0.z;
+		PVec3 NormalX = Py*Qz - Pz*Qy;
+		PVec3 NormalY = Pz*Qx - Px*Qz;
+		PVec3 NormalZ = Px*Qy - Py*Qx;
+
+		normal = { NormalX, NormalY, NormalZ };
+
 
 	}
+	void draw();
+	void activar();
+	void desactivar();
 };
 
 //----------------------------TriAnimado----------------------------------
@@ -113,13 +131,14 @@ class TriAnimado : Triangulo
 
 class Escena {
 public:
-	Escena() : ejes(200), piramidetri(50,10) {};
+	Escena() : ejes(200), r(10,10)/*piramidetri(50,10)*/ {};
   ~Escena();
   void init();
   void draw();
 public:
   Ejes ejes;
-  PiramideTri piramidetri;
+  //PiramideTri piramidetri;
+  Rectangulo r;
 };
 
 

@@ -18,7 +18,8 @@ Escena::~Escena(){
 
 void Escena::draw(){
   ejes.draw();
-  piramidetri.drawDiabolo();
+  r.draw();
+  //piramidetri.drawDiabolo();
 }
 
 //-------------------------------------------------------------------------
@@ -119,6 +120,32 @@ void PiramideTri::draw()
 	//t.draw();
 	
 }
+
+void Rectangulo::draw()
+{
+	activar();
+	glColor4d(0, 0, 0, 1);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+//	glDrawArrays(GL_TRIANGLES, 3, 3);
+	desactivar();
+}
+
+void Rectangulo::activar() {
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glNormalPointer(GL_DOUBLE, 0, normal.data());
+	glVertexPointer(3, GL_DOUBLE, 0, vertices.data());
+}
+
+void Rectangulo::desactivar() {
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+}
+
+
+
 
 void PiramideTri::drawDiabolo()
 {
