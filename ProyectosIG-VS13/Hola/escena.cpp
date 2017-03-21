@@ -1,11 +1,20 @@
 #include "escena.h"
+#include "TextureLoader.h"
 #include <GL/freeglut.h>
 
 //-------------------------------------------------------------------------
 
 void Escena::init(){
+	glEnable(GL_TEXTURE_2D);
+	tx.init();
+	tx.load("ray.bmp");
   // texturas
   // luces
+}
+
+void Escena::update()
+{
+	trianimado.update();
 }
 
 //-------------------------------------------------------------------------
@@ -18,8 +27,14 @@ Escena::~Escena(){
 
 void Escena::draw(){
   ejes.draw();
-  r.draw();
   //piramidetri.drawDiabolo();
+  trianimado.draw();
+  tx.activar();
+ // glTexParameterf(GL_TEXTURE_2D,);
+  r.draw();
+  piramidetri.drawDiabolo();
+  tx.desactivar();
+  
 }
 
 //-------------------------------------------------------------------------
@@ -79,21 +94,30 @@ void Triangulo::draw()
 {
 	activar();
 	glColor4d(0, 0, 0, 1);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glNormal3d(normales[0].x, normales[0].y, normales[0].z);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, numDat);
 	desactivar();
+	//----
+	
+
 }
 
 void Triangulo::activar() {
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glNormalPointer(GL_DOUBLE, 0, normales.data());
 	glVertexPointer(3, GL_DOUBLE, 0, &vertices[0]);
+	glTexCoordPointer(2, GL_DOUBLE, 0, textura);
+
+
 }
 
 void Triangulo::desactivar() {
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 }
 
@@ -123,27 +147,36 @@ void PiramideTri::draw()
 
 void Rectangulo::draw()
 {
+
 	activar();
+
+	//glEnable(GL_TEXTURE_2D);
 	glColor4d(0, 0, 0, 1);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-//	glDrawArrays(GL_TRIANGLES, 3, 3);
+	PVec3 *data = normal.data();
+	glNormal3d(data[0].x, data[0].y, data[0].z);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	
 	desactivar();
 }
 
 void Rectangulo::activar() {
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glNormalPointer(GL_DOUBLE, 0, normal.data());
 	glVertexPointer(3, GL_DOUBLE, 0, vertices.data());
+	glTexCoordPointer(2, GL_DOUBLE, 0, textura);
 }
 
 void Rectangulo::desactivar() {
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 
 }
-
 
 
 
@@ -160,4 +193,28 @@ void PiramideTri::drawDiabolo()
 	glTranslated(0, 0, 4 * hl);
 	glRotated(180, 1, 0, 0);
 	draw();
+}
+
+TriAnimado::TriAnimado(GLdouble angZ, GLdouble centro, GLdouble radio)
+{
+	rotacionZ = angZ;
+	rotacionCentro = centro;
+	rad = radio;
+}
+void TriAnimado::draw()
+{
+	
+	glPushMatrix();
+	glRotated(rotacionZ,0,0,1);
+	glTranslated(rad,0,0);
+	glRotated(rotacionCentro,0,0,1);
+	triangulo.draw();
+	glPopMatrix();
+
+
+}
+void TriAnimado::update()
+{
+	rotacionZ += 10.0;
+	rotacionCentro += 10.0;
 }

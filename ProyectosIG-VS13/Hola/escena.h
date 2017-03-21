@@ -3,6 +3,7 @@
 #define _H_escena_H_
 #include "tipos.h"
 #include <vector>
+#include "Textura.h"
 #include "Math.h"
 #define _USE_MATH_DEFINES
 # define PI           3.14159265358979323846  /* pi */
@@ -23,6 +24,7 @@ class Triangulo {
 public:
 	GLuint numDat;
 	std::vector<PVec3> vertices, normales;
+	CTex2 textura[3];
 
 	Triangulo(int radio) {
 
@@ -47,6 +49,9 @@ public:
 		PVec3 NormalZ = Px*Qy - Py*Qx;
 
 		normales = { NormalX, NormalY, NormalZ };
+		textura[0] = CTex2(0, 0);
+		textura[1] = CTex2(0.5,1);
+		textura[2] = CTex2(1, 0);
 	}
 
 	~Triangulo() { numDat = 0; }
@@ -87,43 +92,58 @@ class Rectangulo
 	
 public:
 
-	//CTex2 textura;
-//	Color4 color;
+	CTex2 textura[4];
+	//Color4 color;
+
 	std::vector<PVec3> vertices, normal;
 	Rectangulo(double ancho, double alto)
 	{
-		PVec3 v0(ancho / 2, -alto / 2, 0.0);
-		PVec3 v1(ancho / 2, alto / 2, 0.0);
-		PVec3 v2(-ancho / 2, alto / 2, 0.0);
-		PVec3 v3(-ancho / 2, alto / 2, 0.0);
-		PVec3 v4(-ancho / 2, -alto / 2, 0.0);
-		vertices = { v0, v1, v2, v0 , v3, v4};
+		PVec3 v0(-ancho / 2, alto / 2, 0.0);
+		PVec3 v1(-ancho / 2, -alto / 2, 0.0);
+		PVec3 v2(ancho / 2, alto / 2, 0.0);
+		//PVec3 v3(-ancho / 2, alto / 2, 0.0);
+		PVec3 v4(ancho / 2, -alto / 2, 0.0);
+		vertices = { v0, v1, v2, v4};
 		GLfloat Qx, Qy, Qz, Px, Py, Pz;
 
-		Px = v1.x - v0.x;
-		Py = v1.y - v0.y;
-		Pz = v1.z - v0.z;
-		Qx = v2.x - v0.x;
-		Qy = v2.y - v0.y;
-		Qz = v2.z - v0.z;
-		PVec3 NormalX = Py*Qz - Pz*Qy;
-		PVec3 NormalY = Pz*Qx - Px*Qz;
-		PVec3 NormalZ = Px*Qy - Py*Qx;
+		textura[0] = CTex2(0, 1);
+		textura[1] = CTex2(0, 0);
+		textura[2] = CTex2(1, 1);
+		textura[3] = CTex2(1, 0);
+		//color = Color4(1.0, 0.0, 0.0, 1.0);
 
-		normal = { NormalX, NormalY, NormalZ };
-
-
+		PVec3 n(0, 0, 1);
+		normal = { n };
+		//init();
+		
 	}
+	void set();
 	void draw();
 	void activar();
 	void desactivar();
+
+private:
+	GLuint textureID;
+	void init();
+	void update();
+
 };
 
 //----------------------------TriAnimado----------------------------------
 
-class TriAnimado : Triangulo
+class TriAnimado
 {
-	
+
+public:
+	GLdouble rotacionZ;
+	GLdouble rotacionCentro;
+	GLdouble rad;
+	Triangulo triangulo = Triangulo(20);
+	TriAnimado(GLdouble angZ, GLdouble centro, GLdouble radio);
+
+	void draw();
+	void update();
+
 };
 
 
@@ -131,14 +151,18 @@ class TriAnimado : Triangulo
 
 class Escena {
 public:
-	Escena() : ejes(200), r(10,10)/*piramidetri(50,10)*/ {};
+	Escena() : ejes(200),piramidetri(25,30), trianimado(2.0,2.0,30.0), r(100,100)/*piramidetri(50,10)*/ {};
   ~Escena();
   void init();
   void draw();
+  void update();
 public:
   Ejes ejes;
-  //PiramideTri piramidetri;
+  PiramideTri piramidetri;
   Rectangulo r;
+  Textura tx;
+  TriAnimado trianimado;
+
 };
 
 

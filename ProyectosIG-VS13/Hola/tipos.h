@@ -30,6 +30,7 @@ public:
 class CTex2
 {
 public:
+	CTex2() : s(0), t(0){};
 	CTex2(GLdouble x, GLdouble y) : s(x), t(y){};
 	~CTex2() {};
 	void set(GLdouble px, GLdouble py){ s = px; t = py; };

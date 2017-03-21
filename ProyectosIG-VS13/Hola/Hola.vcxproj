@@ -46,6 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -69,11 +70,15 @@
     <ClCompile Include="escena.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PixMap24RGB.cpp" />
+    <ClCompile Include="Textura.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="tipos.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="escena.h" />
     <ClInclude Include="PixMap24RGB.h" />
+    <ClInclude Include="Textura.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="tipos.h" />
   </ItemGroup>
   <ItemGroup>

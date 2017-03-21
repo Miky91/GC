@@ -165,7 +165,16 @@ void key(unsigned char key, int x, int y){
 	  camera.setEZ();
 	  break;
   case 't':
-	  //escena.piramidetri.rota();
+	  escena.update();
+	  break;
+  case 'x':
+	  escena.update();
+	  break;
+  case 'y':
+	  escena.update();
+	  break;
+  case 'z':
+	  escena.update();
 	  break;
   default:
     need_redisplay = false;
