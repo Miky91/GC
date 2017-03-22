@@ -165,16 +165,16 @@ void key(unsigned char key, int x, int y){
 	  camera.setEZ();
 	  break;
   case 't':
-	  escena.update();
+	  escena.update(' ');
 	  break;
   case 'x':
-	  escena.update();
+	  escena.update('x');
 	  break;
   case 'y':
-	  escena.update();
+	  escena.update('y');
 	  break;
   case 'z':
-	  escena.update();
+	  escena.update('z');
 	  break;
   default:
     need_redisplay = false;

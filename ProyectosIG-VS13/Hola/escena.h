@@ -70,16 +70,17 @@ class PiramideTri{
 	
 public:
 	Triangulo t,t2,t3;
+	GLdouble rotX, rotY, rotZ;
 	int rad;
 	double hl;
-	PiramideTri(int radBase, double h) : t(radBase),t2(radBase),t3(radBase),rad(radBase), hl(h) {};
+	PiramideTri(int radBase, double h) : t(radBase),t2(radBase),t3(radBase),rad(radBase), hl(h),rotX(0),rotY(0),rotZ(0) {};
 
 	~PiramideTri() { }
 
 	//bool load(char arch[]); //genera los datos
 	void draw();
 	void drawDiabolo();
-	void rota();
+	void update(char c);
 	
 protected:
 	void activar();
@@ -155,7 +156,7 @@ public:
   ~Escena();
   void init();
   void draw();
-  void update();
+  void update(char c);
 public:
   Ejes ejes;
   PiramideTri piramidetri;

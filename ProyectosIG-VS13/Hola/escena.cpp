@@ -1,5 +1,4 @@
 #include "escena.h"
-#include "TextureLoader.h"
 #include <GL/freeglut.h>
 
 //-------------------------------------------------------------------------
@@ -12,9 +11,11 @@ void Escena::init(){
   // luces
 }
 
-void Escena::update()
+void Escena::update(char c)
 {
-	trianimado.update();
+	if (c == ' ')
+		trianimado.update();
+	piramidetri.update(c);
 }
 
 //-------------------------------------------------------------------------
@@ -128,7 +129,7 @@ void PiramideTri::draw()
 	//glRotated(-30, 0, 0, 1);
 	PVec3 *aux = t.vertices.data();
 	hl = 25;
-	aux[0].z = 2*hl;
+	aux[0].z = 2 * hl;
 	aux[0].y = 0;
 	aux[0].x = 0;
 	t.vertices[0] = *aux;
@@ -138,11 +139,29 @@ void PiramideTri::draw()
 	//aux[2].y = hl;
 	aux[1].x = 0;
 	aux[1].y = 0;
-	aux[1].z = 2*hl;
+	aux[1].z = 2 * hl;
 	t3.draw();
 
 	//t.draw();
-	
+
+}
+void PiramideTri::update(char c)
+{
+	if (c == 'x')
+		rotX += 2;
+	else if (c == 'y')
+		rotY += 2;
+	else if (c == 'z')
+		rotZ += 2;
+	/*
+	glPushMatrix();
+	glRotated(rotacionZ, 0, 0, 1);
+	glTranslated(rad, 0, 0);
+	glRotated(rotacionCentro, 0, 0, 1);
+	triangulo.draw();
+	glPopMatrix();
+
+	*/
 }
 
 void Rectangulo::draw()
@@ -157,7 +176,6 @@ void Rectangulo::draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	
 	desactivar();
 }
 
@@ -182,6 +200,10 @@ void Rectangulo::desactivar() {
 
 void PiramideTri::drawDiabolo()
 {
+	glPushMatrix();
+	glRotated(rotX, 1, 0, 0);
+	glRotated(rotY, 0, 1, 0);
+	glRotated(rotZ, 0, 0, 1);
 	glTranslated(0, 2*hl, 0);
 	glRotated(90, 1, 0, 0);
 	draw();
@@ -193,6 +215,8 @@ void PiramideTri::drawDiabolo()
 	glTranslated(0, 0, 4 * hl);
 	glRotated(180, 1, 0, 0);
 	draw();
+
+	glPopMatrix();
 }
 
 TriAnimado::TriAnimado(GLdouble angZ, GLdouble centro, GLdouble radio)
@@ -210,7 +234,6 @@ void TriAnimado::draw()
 	glRotated(rotacionCentro,0,0,1);
 	triangulo.draw();
 	glPopMatrix();
-
 
 }
 void TriAnimado::update()

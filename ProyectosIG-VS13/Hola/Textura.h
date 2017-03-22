@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string>
 #include "PixMap24RGB.h"
-#include "TextureLoader.h"
 
 class Textura {
 public:
