@@ -6,7 +6,8 @@
 #include "Textura.h"
 #include "Math.h"
 #define _USE_MATH_DEFINES
-# define PI           3.14159265358979323846  /* pi */
+#define PI           3.14159265358979323846  /* pi */
+
 //-------------------------------------------------------------------------
 class Ejes {
 public:
@@ -24,16 +25,21 @@ class Triangulo {
 public:
 	GLuint numDat;
 	std::vector<PVec3> vertices, normales;
+	int orientacion;
 	CTex2 textura[3];
+	int r; //radio 
 
 	Triangulo(int radio) {
-
+		r = radio;
 		numDat = 3;
 		PVec3 v0(radio, 0.0, 0.0);
 		PVec3 v1(radio * cos(2 * PI / 3), radio * sin(2 * PI / 3), 0.0);
 		PVec3 v2(radio * cos(2 * PI / 3), -radio * sin(2 * PI / 3), 0.0);
 		vertices = { v0, v1, v2 };
 
+		orientacion = (0 <=(v0.x - v2.x)*(v1.y - v2.y) - (v0.y - v2.y)*(v1.x - v2.x)) ? -1 : 1;
+
+		GLdouble Cx, Cy;//Coordenadas del centro del triangulo. Preguntar si harían falta
 
 		/////Normales
 		GLfloat Qx, Qy, Qz, Px, Py, Pz;
@@ -57,8 +63,11 @@ public:
 	~Triangulo() { numDat = 0; }
 
 	//bool load(char arch[]); //genera los datos
-	void draw();
-
+	void draw(std::string s);
+	void redraw(GLdouble x, GLdouble y);
+	bool dentro(GLdouble x, GLdouble y);
+	void posicionar(GLdouble x, GLdouble y);
+	void rotar();
 protected:
 	void activar();
 	void desactivar();
@@ -152,14 +161,17 @@ public:
 
 class Escena {
 public:
-	Escena() : ejes(200),piramidetri(25,30), trianimado(2.0,2.0,30.0), r(100,100)/*piramidetri(50,10)*/ {};
+	Escena() : ejes(200),piramidetri(25,30), t(25), trianimado(2.0,2.0,30.0), r(100,100)/*piramidetri(50,10)*/ {};
   ~Escena();
   void init();
   void draw();
   void update(char c);
 public:
+  enum estados { Collage, Recortar, Animar, Diabolo };
+  estados actual = Recortar;
   Ejes ejes;
   PiramideTri piramidetri;
+  Triangulo t;
   Rectangulo r;
   Textura tx;
   TriAnimado trianimado;

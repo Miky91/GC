@@ -7,7 +7,6 @@
 
 #include "tipos.h"
 #include "escena.h"
-
 #include <iostream>
 using namespace std;
 
@@ -15,7 +14,7 @@ using namespace std;
 
 // Window size
 int winWidth = 800, winHeight = 600;
-
+GLdouble x, y;
 // Viewport 
 PuertoVista viewPort(0, 0, winWidth, winHeight);
 
@@ -25,6 +24,7 @@ Camara camera(winWidth, winHeight);
 // Scene variables
 Escena escena;
 
+
 //----------- Callbacks ----------------------------------------------------
 
 void display();
@@ -32,6 +32,7 @@ void resize(int newWidth, int newHeight);
 void key(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 void mouse(int button, int state, int x, int y);
+void motion(int px, int py);
 
 //-------------------------------------------------------------------------
 
@@ -95,6 +96,7 @@ int main(int argc, char *argv[]){
   glutSpecialFunc(specialKey);
   glutDisplayFunc(display);
   glutMouseFunc(mouse);
+  glutMotionFunc(motion);
 
   // OpenGL basic setting
   intitGL();
@@ -176,6 +178,18 @@ void key(unsigned char key, int x, int y){
   case 'z':
 	  escena.update('z');
 	  break;
+  case '3':
+	  escena.actual = escena.Animar;
+	  escena.update(' ');
+	  break;
+  case '4':
+	  escena.actual = escena.Diabolo;
+	  escena.update(' ');
+	  break;
+  case '2':
+	  escena.actual = escena.Collage;
+	  escena.update(' ');
+	  break;
   default:
     need_redisplay = false;
     break;
@@ -215,9 +229,15 @@ void specialKey(int key, int x, int y){
 
 //-------------------------------------------------------------------------
 
-void mouse(int button, int state, int x, int y){
-  if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_UP)) { // DOWN
-
+void mouse(int button, int state, int px, int py){
+  if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) { // DOWN
+	  x = float(px);
+	  y = winHeight - float(py);
+	  if (escena.t.dentro(px, py))
+	  {
+		  escena.t.redraw(x, y);
+	  }
+		  
   }
   else {
 
@@ -225,4 +245,15 @@ void mouse(int button, int state, int x, int y){
 }
 
 //-------------------------------------------------------------------------
+
+void motion(int px, int py)
+{
+	cerr << "mouseX: " << x;
+	x = float(px);
+	y = winHeight -float(py);
+
+
+}
+
+
 

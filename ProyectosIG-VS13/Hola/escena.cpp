@@ -13,9 +13,22 @@ void Escena::init(){
 
 void Escena::update(char c)
 {
-	if (c == ' ')
+	
+	switch (actual){
+	case Animar:
+		glEnable(GL_DEPTH_TEST);
 		trianimado.update();
-	piramidetri.update(c);
+		break;
+	case Recortar:
+		glDisable(GL_DEPTH_TEST);
+		break;
+	case Collage:
+		break;
+	case Diabolo:
+		glEnable(GL_DEPTH_TEST);
+		piramidetri.update(c);
+		break;
+	}
 }
 
 //-------------------------------------------------------------------------
@@ -27,15 +40,29 @@ Escena::~Escena(){
 //-------------------------------------------------------------------------
 
 void Escena::draw(){
-  ejes.draw();
-  //piramidetri.drawDiabolo();
-  trianimado.draw();
-  tx.activar();
- // glTexParameterf(GL_TEXTURE_2D,);
-  r.draw();
-  piramidetri.drawDiabolo();
-  tx.desactivar();
-  
+	if (actual == Animar)
+	{
+		ejes.draw();
+		//piramidetri.drawDiabolo();
+		trianimado.draw();
+	}
+	else if (actual == Diabolo)
+	{
+		tx.activar();
+		// glTexParameterf(GL_TEXTURE_2D,);
+		r.draw();
+		piramidetri.drawDiabolo();
+		tx.desactivar();
+	}
+	else if (actual == Recortar)
+	{
+		//tx.activar();
+		//r.draw();
+		t.draw("Recortar");
+		//tx.desactivar();
+	}
+
+	
 }
 
 //-------------------------------------------------------------------------
@@ -91,16 +118,29 @@ void Ejes::draw(){
 }
 
 //-------------------------------------------------------------------------
-void Triangulo::draw()
+void Triangulo::draw( std::string s)
 {
 	activar();
 	glColor4d(0, 0, 0, 1);
 	glNormal3d(normales[0].x, normales[0].y, normales[0].z);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (s == "Recortar")
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, numDat);
 	desactivar();
 	//----
 	
+
+}
+
+void Triangulo::redraw(GLdouble x, GLdouble y)
+{
+	
+	glPushMatrix();
+	glTranslated(x, y, 0);
+	draw("");
+	glPopMatrix();
 
 }
 
@@ -122,6 +162,36 @@ void Triangulo::desactivar() {
 
 }
 
+bool Triangulo::dentro(GLdouble x, GLdouble y)
+{
+	PVec3 *v = vertices.data();
+	bool cond = true;
+	return cond = (((orientacion >= 0) &&
+		((v[2].x - x)*(v[0].y - y) - (v[2].y - y)*(v[0].x - x) >= 0) &&
+		((v[1].x - x)*(v[2].y - y) - (v[1].y - y)*(v[2].x - x) >= 0) &&
+		((v[0].x - x)*(v[1].y - y) - (v[0].y - y)*(v[1].x - x) >= 0))
+		|| ((orientacion < 0) &&
+		((v[2].x - x)*(v[0].y - y) - (v[2].y - y)*(v[0].x - x) < 0) &&
+		((v[1].x - x)*(v[2].y - y) - (v[1].y - y)*(v[2].x - x) < 0) &&
+		((v[0].x - x)*(v[1].y - y) - (v[0].y - y)*(v[1].x - x) < 0))) ? true : false;
+
+	//GLdouble t0 = (v[0].x - x)*(v[1].y - y) - (v[0].y - y)*(v[1].x - x);
+	//GLdouble t1 = (v[1].x - x)*(v[2].y - y) - (v[1].y - y)*(v[2].x - x);
+	//GLdouble t2 = (v[2].x - x)*(v[0].y - y) - (v[2].y - y)*(v[0].x - x);
+
+			
+}
+void Triangulo::posicionar(GLdouble x, GLdouble y)
+{
+	glTranslated(x, y, 0);
+}
+
+void Triangulo::rotar()
+{
+//	glRotated(1, Cx + r*cos(1), Cy + r*sin(1), 0);
+}
+
+
 
 void PiramideTri::draw()
 {
@@ -133,14 +203,14 @@ void PiramideTri::draw()
 	aux[0].y = 0;
 	aux[0].x = 0;
 	t.vertices[0] = *aux;
-	t.draw();
+	t.draw("");
 	aux = t3.vertices.data();
-	t2.draw();
+	t2.draw("");
 	//aux[2].y = hl;
 	aux[1].x = 0;
 	aux[1].y = 0;
 	aux[1].z = 2 * hl;
-	t3.draw();
+	t3.draw("");
 
 	//t.draw();
 
@@ -232,7 +302,7 @@ void TriAnimado::draw()
 	glRotated(rotacionZ,0,0,1);
 	glTranslated(rad,0,0);
 	glRotated(rotacionCentro,0,0,1);
-	triangulo.draw();
+	triangulo.draw("");
 	glPopMatrix();
 
 }
