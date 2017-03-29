@@ -174,12 +174,8 @@ bool Triangulo::dentro(GLdouble x, GLdouble y)
 		((v[2].x - x)*(v[0].y - y) - (v[2].y - y)*(v[0].x - x) < 0) &&
 		((v[1].x - x)*(v[2].y - y) - (v[1].y - y)*(v[2].x - x) < 0) &&
 		((v[0].x - x)*(v[1].y - y) - (v[0].y - y)*(v[1].x - x) < 0))) ? true : false;
+		
 
-	//GLdouble t0 = (v[0].x - x)*(v[1].y - y) - (v[0].y - y)*(v[1].x - x);
-	//GLdouble t1 = (v[1].x - x)*(v[2].y - y) - (v[1].y - y)*(v[2].x - x);
-	//GLdouble t2 = (v[2].x - x)*(v[0].y - y) - (v[2].y - y)*(v[0].x - x);
-
-			
 }
 void Triangulo::posicionar(GLdouble x, GLdouble y)
 {

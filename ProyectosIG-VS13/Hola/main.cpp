@@ -230,12 +230,13 @@ void specialKey(int key, int x, int y){
 //-------------------------------------------------------------------------
 
 void mouse(int button, int state, int px, int py){
-  if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) { // DOWN
-	  x = float(px);
-	  y = winHeight - float(py);
-	  if (escena.t.dentro(px, py))
+	//x = float(px);
+	x = float(px) - (winWidth / 2);
+	y = (winHeight/2) - (winHeight - float(py));
+	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) { // DOWN
+		  if (escena.t.dentro(x, y))
 	  {
-		  escena.t.redraw(x, y);
+			  escena.t.redraw(x, y);
 	  }
 		  
   }
@@ -248,9 +249,8 @@ void mouse(int button, int state, int px, int py){
 
 void motion(int px, int py)
 {
-	cerr << "mouseX: " << x;
 	x = float(px);
-	y = winHeight -float(py);
+	y = winHeight - float(py);
 
 
 }

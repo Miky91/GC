@@ -36,9 +36,9 @@ public:
 		PVec3 v1(radio * cos(2 * PI / 3), radio * sin(2 * PI / 3), 0.0);
 		PVec3 v2(radio * cos(2 * PI / 3), -radio * sin(2 * PI / 3), 0.0);
 		vertices = { v0, v1, v2 };
-
-		orientacion = (0 <=(v0.x - v2.x)*(v1.y - v2.y) - (v0.y - v2.y)*(v1.x - v2.x)) ? -1 : 1;
-
+		
+		orientacion = (0 <=(v0.x - v2.x)*(v1.y - v2.y) - (v0.y - v2.y)*(v1.x - v2.x)) ? 1 : -1;
+		//(A1.x - A3.x) * (A2.y - A3.y) - (A1.y - A3.y) * (A2.x - A3.x)
 		GLdouble Cx, Cy;//Coordenadas del centro del triangulo. Preguntar si harían falta
 
 		/////Normales
