@@ -19,6 +19,7 @@ public:
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		//delete[] data;
+		desactivar();
 	};
 		// establecer filtros 
 	void activar() { 
@@ -32,6 +33,10 @@ public:
 	// cargar y transferir a openGL
 	void save(const std::string & BMP_Name);
 	// obtener de openGL y guardar
+
+	bool load(const std::string	&BMP_Name,	GLubyte	alpha);
+	bool load(const std::string	&BMP_Name,	PixMap24RGB::rgb_color	colorKey,	GLubyte	alpha);
+
 public:
 	GLuint w, h;
 	// dimensiones de la imagen

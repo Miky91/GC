@@ -41,11 +41,12 @@ void motion(int px, int py);
 void intitGL(){ //OpenGL basic setting
 
   //glEnable(GL_LIGHTING);
-  glEnable(GL_DEPTH_TEST);
+  
+  //glEnable(GL_DEPTH_TEST);
   //glEnable(GL_NORMALIZE);
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_TEXTURE_2D);
-  glEnable(GL_POLYGON_SMOOTH);
+  //glEnable(GL_POLYGON_SMOOTH);
   //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   //glShadeModel(GL_SMOOTH);
 
@@ -86,7 +87,7 @@ int main(int argc, char *argv[]){
   // Initialization
   glutInitWindowSize(winWidth, winHeight);
   //glutInitWindowPosition (140, 140);
-  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInit(&argc, argv);
 
   // Window construction
@@ -180,20 +181,27 @@ void key(unsigned char key, int x, int y){
   case 'z':
 	  escena.update('z');
 	  break;
+  case '2':
+	  escena.save();
+	  escena.actual = escena.Recortar;
+	  escena.update(' ');
+	  break;
   case '3':
-	  escena.actual = escena.Animar;
-	  
+	  escena.t.coordTextura(escena.r);
+	  for (int i = 0; i < 3; i++)
+	  {
+		  escena.trianimado.triangulo.textura[i] = escena.t.textura[i];
+	  }
+	  escena.actual = escena.Animar; 
 	  escena.update(' ');
 	  break;
   case '4':
 	  escena.actual = escena.Diabolo;
 	  escena.update(' ');
 	  break;
-  
-	  break;
-  case '2':
-	  escena.actual = escena.Collage;
-	  escena.update(' ');
+  //case '2':
+	//  escena.actual = escena.Collage;
+	  //escena.update(' ');
 	  break;
   default:
     need_redisplay = false;

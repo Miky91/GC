@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="ray.bmp" />
+    <Image Include="smile.bmp" />
+    <Image Include="Zelda.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

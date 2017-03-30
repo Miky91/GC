@@ -1,4 +1,4 @@
-﻿Compilación iniciada a las 30/03/2017 19:42:36.
+﻿Compilación iniciada a las 31/03/2017 1:35:10.
      1>Proyecto "E:\Program Files\Repositorios\GC\ProyectosIG-VS13\Hola\Hola.vcxproj" en el nodo 2 (Build destinos).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt escena.cpp
@@ -23,12 +23,9 @@
          Debug\PixMap24RGB.obj
          Debug\Textura.obj
          Debug\tipos.obj
-         LINK : no se encontró E:\Program Files\Repositorios\GC\ProyectosIG-VS13\bin\HolaDebug.exe o no lo generó el último vínculo incremental; ejecutando vínculo completo
-     1>tipos.obj : warning LNK4099: no se encontró PDB 'vc120.pdb' con 'tipos.obj' o en 'E:\Program Files\Repositorios\GC\ProyectosIG-VS13\bin\vc120.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-     1>PixMap24RGB.obj : warning LNK4099: no se encontró PDB 'vc120.pdb' con 'PixMap24RGB.obj' o en 'E:\Program Files\Repositorios\GC\ProyectosIG-VS13\bin\vc120.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
          Hola.vcxproj -> E:\Program Files\Repositorios\GC\ProyectosIG-VS13\bin\HolaDebug.exe
      1>Compilación del proyecto terminada "E:\Program Files\Repositorios\GC\ProyectosIG-VS13\Hola\Hola.vcxproj" (Build destinos).
 
 Compilación correcta.
 
-Tiempo transcurrido 00:00:12.29
+Tiempo transcurrido 00:00:10.75

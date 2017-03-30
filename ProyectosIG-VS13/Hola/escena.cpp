@@ -4,9 +4,19 @@
 //-------------------------------------------------------------------------
 
 void Escena::init(){
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
+	trans.init();
+	trans.activar();
+	trans.load("Zelda.bmp", 100);
+	trans.desactivar();
+	smile.init();
+	smile.activar();
+	smile.load("smile.bmp", PixMap24RGB::rgb_color{255,255,255}, 120);
+	smile.desactivar();
 	tx.init();
+	tx.activar();
 	tx.load("ray.bmp");
+	tx.desactivar();
   // texturas
   // luces
 }
@@ -16,22 +26,18 @@ void Escena::update(char c)
 	
 	switch (actual){
 	case Animar:
-		glEnable(GL_DEPTH_TEST);
-		t.coordTextura(r);
-		for (int i = 0; i < 3;++i)
-		{
-			trianimado.triangulo.textura[i] = t.textura[i];
-		}
+		//glEnable(GL_DEPTH_TEST);
 		
 		trianimado.update();
 		break;
 	case Recortar:
-		glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_DEPTH_TEST);
 		break;
 	case Collage:
+
 		break;
 	case Diabolo:
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
 		piramidetri.update(c);
 		break;
 	}
@@ -45,31 +51,61 @@ Escena::~Escena(){
 
 //-------------------------------------------------------------------------
 
+void Escena::save()
+{
+	collage.init();
+	collage.activar();
+	collage.save("collage.bmp");
+	collage.desactivar();
+}
+
 void Escena::draw(){
 	if (actual == Animar)
 	{
+		glEnable(GL_DEPTH_TEST);
 		ejes.draw();
 		//piramidetri.drawDiabolo();
-
+		tx.activar();
 	//	t.draw(" ");
 		trianimado.triangulo.vertices = t.vertices;
-		
 		trianimado.draw();
+		tx.desactivar();
 	}
 	else if (actual == Diabolo)
 	{
-		tx.activar();
+		glEnable(GL_DEPTH_TEST);
+		collage.activar();
 		// glTexParameterf(GL_TEXTURE_2D,);
 		r.draw();
 		piramidetri.drawDiabolo();
-		tx.desactivar();
+		collage.desactivar();
 	}
 	else if (actual == Recortar)
 	{
+		glEnable(GL_DEPTH_TEST);
+		collage.activar();
+		r.draw();
+		collage.desactivar();
+		t.draw("Recortar");
+		
+	}
+	else if (actual == Collage)
+	{
+		glDisable(GL_DEPTH_TEST);
 		tx.activar();
 		r.draw();
-		t.draw("Recortar");
 		tx.desactivar();
+		glPushMatrix();
+		trans.activar();
+		glTranslated(-80, -70, 0);
+		glRotated(-45, 0, 0, 1);
+		transRectangulo.draw();
+		trans.desactivar();
+		glPopMatrix();
+		smile.activar();
+		smileRectangulo.draw();
+		smile.desactivar();
+		
 	}
 
 	
@@ -131,7 +167,7 @@ void Ejes::draw(){
 void Triangulo::draw( std::string s)
 {
 	activar();
-	glColor4d(0, 0, 0, 1);
+	glColor4d(255, 255, 255, 1);
 	glNormal3d(normales[0].x, normales[0].y, normales[0].z);
 	if (s == "Recortar")
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -168,14 +204,14 @@ void Triangulo::coordTextura(Rectangulo r)
 	GLdouble porcY;
 	PVec3 *arr = r.vertices.data();
 	PVec3 *var = vertices.data();
-	porcX = var[1].x/arr[2].x;
-	porcY = var[1].y/arr[2].y;
+	porcX = (arr[2].x + var[0].x) / (arr[2].x * 2);
+	porcY = (arr[2].y + var[0].y) / (2 * arr[2].y);
 	textura[0] = CTex2(porcX, porcY);
-	porcX = var[2].x / arr[2].x;
-	porcY = var[2].y / arr[2].y;
+	porcX = (arr[2].x + var[1].x) / (2 * arr[2].x);
+	porcY = (arr[2].y + var[1].y) / (2 * arr[2].y);
 	textura[1] = CTex2(porcX, porcY);
-	porcX = var[0].x / arr[2].x;
-	porcY = var[0].y / arr[2].y;
+	porcX = (arr[2].x + var[2].x) / (2 * arr[2].x);
+	porcY = (arr[2].y + var[2].y) / (2 * arr[2].y);
 	textura[2] = CTex2(porcX, porcY);
 
 }
@@ -274,14 +310,15 @@ void Rectangulo::draw()
 {
 
 	activar();
-
-	//glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(0, 0, 0, 1);
 	PVec3 *data = normal.data();
 	glNormal3d(data[0].x, data[0].y, data[0].z);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDisable(GL_BLEND);
 	desactivar();
 }
 

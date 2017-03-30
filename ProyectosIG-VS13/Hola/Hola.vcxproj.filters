@@ -49,5 +49,11 @@
     <Image Include="ray.bmp">
       <Filter>Archivos de recursos</Filter>
     </Image>
+    <Image Include="Zelda.bmp">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="smile.bmp">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
   </ItemGroup>
 </Project>

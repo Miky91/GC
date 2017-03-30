@@ -168,19 +168,25 @@ public:
 
 class Escena {
 public:
-	Escena() : ejes(200),piramidetri(25,30), t(25), trianimado(2.0,2.0,30.0), r(300,300)/*piramidetri(50,10)*/ {};
+	Escena() : ejes(200),piramidetri(25,30), t(25), trianimado(2.0,2.0,30.0), r(800,600),transRectangulo(100,150),smileRectangulo(50,50)/*piramidetri(50,10)*/ {};
   ~Escena();
   void init();
   void draw();
   void update(char c);
+  void save();
 public:
   enum estados { Collage, Recortar, Animar, Diabolo };
-  estados actual = Recortar;
+  estados actual = Collage;
   Ejes ejes;
   PiramideTri piramidetri;
   Triangulo t;
   Rectangulo r;
+  Rectangulo transRectangulo;
+  Rectangulo smileRectangulo;
   Textura tx;
+  Textura collage;
+  Textura trans;
+  Textura smile;
   TriAnimado trianimado;
 
 };
