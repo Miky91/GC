@@ -19,6 +19,50 @@ public:
   PVec3 colores[6];
 };
 
+class Rectangulo
+{
+
+public:
+
+	CTex2 textura[4];
+	//Color4 color;
+
+	std::vector<PVec3> vertices, normal;
+	Rectangulo(double ancho, double alto)
+	{
+		PVec3 v0(-ancho / 2, alto / 2, 0.0);
+		PVec3 v1(-ancho / 2, -alto / 2, 0.0);
+		PVec3 v2(ancho / 2, alto / 2, 0.0);
+		//PVec3 v3(-ancho / 2, alto / 2, 0.0);
+		PVec3 v4(ancho / 2, -alto / 2, 0.0);
+		vertices = { v0, v1, v2, v4 };
+		GLfloat Qx, Qy, Qz, Px, Py, Pz;
+
+		textura[0] = CTex2(0, 1);
+		textura[1] = CTex2(0, 0);
+		textura[2] = CTex2(1, 1);
+		textura[3] = CTex2(1, 0);
+		//color = Color4(1.0, 0.0, 0.0, 1.0);
+
+		PVec3 n(0, 0, 1);
+		normal = { n };
+		//init();
+
+	}
+	void set();
+	void draw();
+	void activar();
+	void desactivar();
+
+private:
+	GLuint textureID;
+	void init();
+	void update();
+
+};
+
+
+
 //-------------------------------------------------------------------------
 
 class Triangulo {
@@ -28,6 +72,9 @@ public:
 	int orientacion;
 	CTex2 textura[3];
 	int r; //radio 
+	//GLdouble radGiro = 100;
+	GLdouble rotacionZ = 0;
+	GLdouble rotacionCentro = 0;
 
 	Triangulo(int radio) {
 		r = radio;
@@ -68,6 +115,7 @@ public:
 	bool dentro(GLdouble x, GLdouble y);
 	void posicionar(GLdouble x, GLdouble y);
 	void rotar();
+	void coordTextura(Rectangulo r);
 protected:
 	void activar();
 	void desactivar();
@@ -97,47 +145,6 @@ protected:
 };
 
 
-class Rectangulo
-{
-	
-public:
-
-	CTex2 textura[4];
-	//Color4 color;
-
-	std::vector<PVec3> vertices, normal;
-	Rectangulo(double ancho, double alto)
-	{
-		PVec3 v0(-ancho / 2, alto / 2, 0.0);
-		PVec3 v1(-ancho / 2, -alto / 2, 0.0);
-		PVec3 v2(ancho / 2, alto / 2, 0.0);
-		//PVec3 v3(-ancho / 2, alto / 2, 0.0);
-		PVec3 v4(ancho / 2, -alto / 2, 0.0);
-		vertices = { v0, v1, v2, v4};
-		GLfloat Qx, Qy, Qz, Px, Py, Pz;
-
-		textura[0] = CTex2(0, 1);
-		textura[1] = CTex2(0, 0);
-		textura[2] = CTex2(1, 1);
-		textura[3] = CTex2(1, 0);
-		//color = Color4(1.0, 0.0, 0.0, 1.0);
-
-		PVec3 n(0, 0, 1);
-		normal = { n };
-		//init();
-		
-	}
-	void set();
-	void draw();
-	void activar();
-	void desactivar();
-
-private:
-	GLuint textureID;
-	void init();
-	void update();
-
-};
 
 //----------------------------TriAnimado----------------------------------
 
@@ -161,7 +168,7 @@ public:
 
 class Escena {
 public:
-	Escena() : ejes(200),piramidetri(25,30), t(25), trianimado(2.0,2.0,30.0), r(100,100)/*piramidetri(50,10)*/ {};
+	Escena() : ejes(200),piramidetri(25,30), t(25), trianimado(2.0,2.0,30.0), r(300,300)/*piramidetri(50,10)*/ {};
   ~Escena();
   void init();
   void draw();

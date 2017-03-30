@@ -17,6 +17,12 @@ void Escena::update(char c)
 	switch (actual){
 	case Animar:
 		glEnable(GL_DEPTH_TEST);
+		t.coordTextura(r);
+		for (int i = 0; i < 3;++i)
+		{
+			trianimado.triangulo.textura[i] = t.textura[i];
+		}
+		
 		trianimado.update();
 		break;
 	case Recortar:
@@ -44,6 +50,10 @@ void Escena::draw(){
 	{
 		ejes.draw();
 		//piramidetri.drawDiabolo();
+
+	//	t.draw(" ");
+		trianimado.triangulo.vertices = t.vertices;
+		
 		trianimado.draw();
 	}
 	else if (actual == Diabolo)
@@ -56,10 +66,10 @@ void Escena::draw(){
 	}
 	else if (actual == Recortar)
 	{
-		//tx.activar();
-		//r.draw();
+		tx.activar();
+		r.draw();
 		t.draw("Recortar");
-		//tx.desactivar();
+		tx.desactivar();
 	}
 
 	
@@ -136,11 +146,37 @@ void Triangulo::draw( std::string s)
 
 void Triangulo::redraw(GLdouble x, GLdouble y)
 {
-	
+	PVec3 *data = vertices.data();
 	glPushMatrix();
-	glTranslated(x, y, 0);
-	draw("");
+	glTranslated(x , y , 0);
+	data[0].x += x;
+	data[1].x += x;
+	data[2].x += x;
+	data[0].y += y;
+	data[1].y += y;
+	data[2].y += y;
+	//glTranslated(x + data[1].x, y + data[1].y, 0);
+	//glTranslated(x + data[2].x, y +data[2].y, 0);
+	draw("Recortar");
 	glPopMatrix();
+
+}
+
+void Triangulo::coordTextura(Rectangulo r)
+{
+	GLdouble porcX;
+	GLdouble porcY;
+	PVec3 *arr = r.vertices.data();
+	PVec3 *var = vertices.data();
+	porcX = var[1].x/arr[2].x;
+	porcY = var[1].y/arr[2].y;
+	textura[0] = CTex2(porcX, porcY);
+	porcX = var[2].x / arr[2].x;
+	porcY = var[2].y / arr[2].y;
+	textura[1] = CTex2(porcX, porcY);
+	porcX = var[0].x / arr[2].x;
+	porcY = var[0].y / arr[2].y;
+	textura[2] = CTex2(porcX, porcY);
 
 }
 
@@ -179,12 +215,16 @@ bool Triangulo::dentro(GLdouble x, GLdouble y)
 }
 void Triangulo::posicionar(GLdouble x, GLdouble y)
 {
+	glPushMatrix();
 	glTranslated(x, y, 0);
+	//draw("Recortar");
+	glPopMatrix();
 }
 
 void Triangulo::rotar()
 {
 //	glRotated(1, Cx + r*cos(1), Cy + r*sin(1), 0);
+	
 }
 
 

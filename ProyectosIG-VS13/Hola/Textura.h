@@ -37,4 +37,5 @@ public:
 	// dimensiones de la imagen
 	GLuint id;
 	// identificador interno de la textura
+	//CTex2 *pA = nullptr;
 };

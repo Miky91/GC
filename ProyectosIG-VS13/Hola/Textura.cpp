@@ -1,4 +1,5 @@
 #include "Textura.h"
+#include "tipos.h"
 
 bool Textura::load(const std::string & BMP_Name) {
 	// la textura debe estar inicializada -> escena::init()
@@ -24,4 +25,6 @@ void Textura::save(const std::string & BMP_Name) {
 	// pA-> array donde guardar los datos (de tipo y tamaño adecuado)
 	//...
 	// y guardar
+
+	//glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB,/*obtener de openGL*/GL_UNSIGNED_BYTE, pA);
 }

@@ -15,6 +15,8 @@ using namespace std;
 // Window size
 int winWidth = 800, winHeight = 600;
 GLdouble x, y;
+GLdouble previous_x = 0;
+GLdouble previous_y = 0;
 // Viewport 
 PuertoVista viewPort(0, 0, winWidth, winHeight);
 
@@ -180,11 +182,14 @@ void key(unsigned char key, int x, int y){
 	  break;
   case '3':
 	  escena.actual = escena.Animar;
+	  
 	  escena.update(' ');
 	  break;
   case '4':
 	  escena.actual = escena.Diabolo;
 	  escena.update(' ');
+	  break;
+  
 	  break;
   case '2':
 	  escena.actual = escena.Collage;
@@ -231,28 +236,69 @@ void specialKey(int key, int x, int y){
 
 void mouse(int button, int state, int px, int py){
 	//x = float(px);
-	x = float(px) - (winWidth / 2);
-	y = (winHeight/2) - (winHeight - float(py));
-	if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) { // DOWN
-		  if (escena.t.dentro(x, y))
-	  {
-			  escena.t.redraw(x, y);
-	  }
-		  
-  }
-  else {
+	
+	//if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN)) { // DOWN
 
-  }
+	PVec3 *data = escena.t.vertices.data();
+
+		cout << data[0].x << endl;
+		cout << data[1].x << endl;
+		cout << data[2].x << endl;
+
+	//}
 }
 
 //-------------------------------------------------------------------------
 
 void motion(int px, int py)
-{
-	x = float(px);
-	y = winHeight - float(py);
+{	
+	x = float(px) - (winWidth / 2);
+	y = (winHeight - float(py)) - (winHeight / 2);
+	bool caca = escena.t.dentro(x, y);
+	if (escena.t.dentro(x, y))
+	{
+		float j = x - (x - 1);
+		float t = y - (y - 1);
+		if (x > previous_x)
+		{
+			previous_x = x;
+			j = 3;
+		}
+		else if (x < previous_x)
+		{
+			previous_x = x;
+			j = -3;
+		}
+		if (y > previous_y)
+		{
+			t = 3;
+			previous_y = y;
+		}
 
-
+		else if (y < previous_y)
+		{
+			t = -3;
+			previous_y = y;
+		}
+			
+		PVec3 *data = escena.t.vertices.data();
+		data[0].x += j;
+		data[1].x += j;
+		data[2].x += j;
+		data[0].y += t;
+		data[1].y += t;
+		data[2].y += t;
+		/*PVec3 *data = escena.t.vertices.data();
+		data[0].x += data[0].x + x;
+		data[1].x += data[1].x + x;
+		data[2].x += data[2].x + x;
+		data[0].y += data[0].y + y;
+		data[1].y += data[1].y + y;
+		data[2].y += data[2].y + y;
+		*/escena.t.posicionar(j, t);
+		//escena.t.draw("Recortar");//.redraw(x, y);
+	}
+	glutPostRedisplay();
 }
 
 
