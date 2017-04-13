@@ -32,6 +32,10 @@ void Escena::update(char c)
 		break;
 	case Recortar:
 		//glDisable(GL_DEPTH_TEST);
+		if (c == 'r')
+			t.rotar();
+		else if ((c == '+') || (c == '-'))
+			t.update(c);
 		break;
 	case Collage:
 
@@ -39,6 +43,9 @@ void Escena::update(char c)
 	case Diabolo:
 		//glEnable(GL_DEPTH_TEST);
 		piramidetri.update(c);
+		break;
+	case Cube:
+		cubo.update();
 		break;
 	}
 }
@@ -58,6 +65,13 @@ void Escena::save()
 	collage.save("collage.bmp");
 	collage.desactivar();
 }
+void Escena::load()
+{
+	collage.init();
+	collage.activar();
+	collage.load("collage.bmp");
+	collage.desactivar();
+}
 
 void Escena::draw(){
 	if (actual == Animar)
@@ -65,28 +79,32 @@ void Escena::draw(){
 		glEnable(GL_DEPTH_TEST);
 		ejes.draw();
 		//piramidetri.drawDiabolo();
-		tx.activar();
+		collage.activar();
 	//	t.draw(" ");
 		trianimado.triangulo.vertices = t.vertices;
 		trianimado.draw();
-		tx.desactivar();
+		collage.desactivar();
 	}
 	else if (actual == Diabolo)
 	{
 		glEnable(GL_DEPTH_TEST);
+		ejes.draw();
 		collage.activar();
 		// glTexParameterf(GL_TEXTURE_2D,);
-		r.draw();
+		//r.draw();
 		piramidetri.drawDiabolo();
 		collage.desactivar();
 	}
 	else if (actual == Recortar)
 	{
+
 		glEnable(GL_DEPTH_TEST);
-		collage.activar();
-		r.draw();
-		collage.desactivar();
+		t.recalculaVertices();
+
 		t.draw("Recortar");
+		tx.activar();
+		r.draw();
+		tx.desactivar();	
 		
 	}
 	else if (actual == Collage)
@@ -100,12 +118,25 @@ void Escena::draw(){
 		glTranslated(-80, -70, 0);
 		glRotated(-45, 0, 0, 1);
 		transRectangulo.draw();
+		glTranslated(150, 150, 0);
+		translucido.draw("");
 		trans.desactivar();
 		glPopMatrix();
 		smile.activar();
 		smileRectangulo.draw();
 		smile.desactivar();
 		
+	}
+	else if (actual == Cube)
+	{
+		ejes.draw();
+		glEnable(GL_DEPTH_TEST);
+		tx.activar();
+		cubo.draw();
+		tx.desactivar();
+		
+		//tx.activar();
+		//tx.desactivar();
 	}
 
 	
@@ -166,8 +197,12 @@ void Ejes::draw(){
 //-------------------------------------------------------------------------
 void Triangulo::draw( std::string s)
 {
+	glEnable(GL_BLEND);
+	glPushMatrix();
 	activar();
 	glColor4d(255, 255, 255, 1);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glScaled(scaled, scaled, scaled);
 	glNormal3d(normales[0].x, normales[0].y, normales[0].z);
 	if (s == "Recortar")
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -175,28 +210,34 @@ void Triangulo::draw( std::string s)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawArrays(GL_TRIANGLES, 0, numDat);
 	desactivar();
+	glPopMatrix();
+	glDisable(GL_BLEND);
 	//----
 	
 
 }
-
-void Triangulo::redraw(GLdouble x, GLdouble y)
+void Triangulo::update(char c)
 {
-	PVec3 *data = vertices.data();
-	glPushMatrix();
-	glTranslated(x , y , 0);
-	data[0].x += x;
-	data[1].x += x;
-	data[2].x += x;
-	data[0].y += y;
-	data[1].y += y;
-	data[2].y += y;
-	//glTranslated(x + data[1].x, y + data[1].y, 0);
-	//glTranslated(x + data[2].x, y +data[2].y, 0);
-	draw("Recortar");
-	glPopMatrix();
+	if (c == '+')
+		scaled += 0.1;
+	else if (c == '-')
+		scaled -= 0.1;
+	recalculaVertices();
 
 }
+void Triangulo::recalculaVertices()
+{
+	PVec3 *data = vertices.data();
+	for (int i = 0; i < 3; i++)
+	{
+//		angulos[i] += (rotacion/10)*(PI / 18);
+		data[i].x = x+r*scaled*cos(angulos[i]);
+		data[i].y = y+r*scaled*sin(angulos[i]);
+	}
+
+}
+
+
 
 void Triangulo::coordTextura(Rectangulo r)
 {
@@ -249,17 +290,33 @@ bool Triangulo::dentro(GLdouble x, GLdouble y)
 		
 
 }
-void Triangulo::posicionar(GLdouble x, GLdouble y)
+void Triangulo::posicionar(GLdouble px, GLdouble py)
 {
-	glPushMatrix();
-	glTranslated(x, y, 0);
+//	glPushMatrix();
+	x = px;
+	y = py;
+	recalculaVertices();
+//	glTranslated(x, y, 0);
 	//draw("Recortar");
-	glPopMatrix();
+	//glPopMatrix();
 }
 
 void Triangulo::rotar()
 {
-//	glRotated(1, Cx + r*cos(1), Cy + r*sin(1), 0);
+	for (int i = 0; i < 3; i++)
+	{
+		angulos[i] += 0.2;
+	}
+//	angulos[0] += 10;
+
+//	redraw(x,y);
+	//glPushMatrix();
+	//glTranslated(-x, -y, 0);
+	//glRotated(rotacion, 0, 0, 1);
+	//glTranslated(x, y, 0);
+	//glTranslated(x, y, 0);
+	//draw("Recortar");
+	//glPopMatrix();
 	
 }
 
@@ -377,10 +434,84 @@ void TriAnimado::draw()
 	glRotated(rotacionCentro,0,0,1);
 	triangulo.draw("");
 	glPopMatrix();
+//	if (c == 'r')
+	//	glRotated(rotacionCentro, 0, 0, 1);
 
 }
 void TriAnimado::update()
 {
 	rotacionZ += 10.0;
-	rotacionCentro += 10.0;
 }
+
+Cubo::Cubo(double lado)
+{
+		PVec3 v = PVec3(-lado/2,lado/2, -lado/2);
+		PVec3 v1 = PVec3(-lado / 2, -lado/2, -lado / 2);
+		PVec3 v2 = PVec3(-lado / 2, lado/2, lado/2);
+		PVec3 v3 = PVec3(-lado / 2, -lado / 2, lado / 2);
+
+		PVec3 v4 = PVec3(lado / 2, lado / 2, lado / 2);
+		PVec3 v5 = PVec3(lado / 2, -lado / 2, lado / 2);
+		PVec3 v6 = PVec3(lado / 2, lado / 2, -lado / 2);
+		PVec3 v7 = PVec3(lado / 2, -lado / 2, -lado / 2);
+
+		vertices = { v, v1, v2, v3, v4, v5, v6, v7 };
+		PVec3 n(0, 0, 1);
+		normal = { n };
+		textura[0] = CTex2(0, 1);
+		textura[1] = CTex2(0, 0);
+		textura[2] = CTex2(1, 1);
+		textura[3] = CTex2(1, 0);
+		
+}
+
+void Cubo::activar()
+{
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glNormalPointer(GL_DOUBLE, 0, normal.data());
+	glVertexPointer(3, GL_DOUBLE, 0, vertices.data());
+//	glTexCoordPointer(2, GL_DOUBLE, 0, textura);
+}
+
+void Cubo::desactivar() {
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+
+}
+Cubo::~Cubo()
+{
+
+}
+
+void Cubo::update()
+{
+	rot += 5;
+	scaled += 0.1;
+	
+}
+void Cubo::draw()
+{
+	glPushMatrix();
+	activar();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4d(0, 0, 0, 1);
+	PVec3 *data = normal.data();
+	glRotated(rot, 0, 0, 1);
+	glScaled(scaled, scaled, scaled);
+	glNormal3d(data[0].x, data[0].y, data[0].z);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL/*GL_LINE*/);
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+	glRotated(90, 0, 0, 1);
+	glRotated(180, 1, 0, 0);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+	glDisable(GL_BLEND);
+	desactivar();
+	glPopMatrix();
+}
+

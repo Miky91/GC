@@ -14,12 +14,13 @@ using namespace std;
 
 // Window size
 int winWidth = 800, winHeight = 600;
-GLdouble x, y;
+GLdouble x = 0;
+GLdouble y = 0;
 GLdouble previous_x = 0;
 GLdouble previous_y = 0;
 // Viewport 
 PuertoVista viewPort(0, 0, winWidth, winHeight);
-
+bool tilling = false;
 // Camera: Scene visible area size and projection
 Camara camera(winWidth, winHeight);
 
@@ -125,8 +126,26 @@ void display(){
   
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-
-  escena.draw();
+  GLuint x, y;
+  if (tilling)
+  {
+	  for(int i = 0; i < 3; i++){
+		  for (int j = 0; j < 4; j++){
+			  x = viewPort.x;
+			  y = viewPort.y;
+				  viewPort.set(((j*winWidth) / 4), (((i*winHeight)) / 3), winWidth / 4, winHeight / 3);  //glViewport(0, 0, WIDTH, HEIGHT);
+				  escena.draw();
+			  }
+		  
+		  }
+	 
+  }
+  else 
+  {
+	  viewPort.set(0,0, winWidth, winHeight);
+	  escena.draw();
+  }
+	
 
   glPopMatrix();
   
@@ -158,11 +177,17 @@ void key(unsigned char key, int x, int y){
     glutLeaveMainLoop(); // Freeglut's sentence for stopping glut's main loop 
     break;
   case '+':
-    glScaled(1.1, 1.1, 1.1); // aumentar la escala 
-    break;
+	  if (escena.actual != escena.Recortar)
+		  glScaled(1.1, 1.1, 1.1); // aumentar la escala 
+	  else
+		  escena.update('+');
+	  break;
   case '-':
-    glScaled(0.9, 0.9, 0.9); // reducir la escala 
-    break;
+	  if (escena.actual != escena.Recortar)
+		  glScaled(0.9, 0.9, 0.9); // reducir la escala 
+	  else
+		  escena.update('-');
+	  break;
   case 'l':
 	  camera.set3D(); 
 	  break;
@@ -170,32 +195,57 @@ void key(unsigned char key, int x, int y){
 	  camera.setEZ();
 	  break;
   case 't':
-	  escena.update(' ');
+	  escena.update('t');
 	  break;
   case 'x':
-	  escena.update('x');
+	  if (escena.actual == escena.Diabolo)
+		  escena.update('x');
 	  break;
+  case 'm':
+	  tilling = !tilling;
   case 'y':
-	  escena.update('y');
+	  if (escena.actual == escena.Diabolo)
+		  escena.update('y');
+	  break;
+  case '5':
+	  escena.actual = escena.Cube;
 	  break;
   case 'z':
-	  escena.update('z');
+	  if (escena.actual == escena.Diabolo)
+		  escena.update('z');
+	  break;
+  case 'r':
+		  escena.t.rota = true;
+		  escena.update('r');
 	  break;
   case '2':
-	  escena.save();
+//	  escena.load();
+	  if (escena.actual == escena.Collage)
+		  escena.save();
+	  escena.tx = escena.collage;
+	  escena.t.vertices = escena.trianimado.triangulo.vertices;
 	  escena.actual = escena.Recortar;
 	  escena.update(' ');
 	  break;
   case '3':
+
 	  escena.t.coordTextura(escena.r);
 	  for (int i = 0; i < 3; i++)
 	  {
 		  escena.trianimado.triangulo.textura[i] = escena.t.textura[i];
 	  }
-	  escena.actual = escena.Animar; 
+	  escena.actual = escena.Animar;
+
 	  escena.update(' ');
 	  break;
   case '4':
+	  escena.t.coordTextura(escena.r);
+	  for (int i = 0; i < 3; i++)
+	  {
+		  escena.piramidetri.t.textura[i] = escena.t.textura[i];
+		  escena.piramidetri.t2.textura[i] = escena.t.textura[i];
+		  escena.piramidetri.t3.textura[i] = escena.t.textura[i];
+	  }
 	  escena.actual = escena.Diabolo;
 	  escena.update(' ');
 	  break;
@@ -260,11 +310,11 @@ void mouse(int button, int state, int px, int py){
 
 void motion(int px, int py)
 {	
-	x = float(px) - (winWidth / 2);
-	y = (winHeight - float(py)) - (winHeight / 2);
-	bool caca = escena.t.dentro(x, y);
-	if (escena.t.dentro(x, y))
-	{
+//	escena.t.rota = false;
+	px = float(px) - (winWidth / 2);
+	py = (winHeight - float(py)) - (winHeight / 2);
+	if (escena.t.dentro(px, py))
+	{/*
 		float j = x - (x - 1);
 		float t = y - (y - 1);
 		if (x > previous_x)
@@ -288,14 +338,14 @@ void motion(int px, int py)
 			t = -3;
 			previous_y = y;
 		}
-			
+		
 		PVec3 *data = escena.t.vertices.data();
 		data[0].x += j;
 		data[1].x += j;
 		data[2].x += j;
 		data[0].y += t;
 		data[1].y += t;
-		data[2].y += t;
+		data[2].y += t;*/
 		/*PVec3 *data = escena.t.vertices.data();
 		data[0].x += data[0].x + x;
 		data[1].x += data[1].x + x;
@@ -303,7 +353,8 @@ void motion(int px, int py)
 		data[0].y += data[0].y + y;
 		data[1].y += data[1].y + y;
 		data[2].y += data[2].y + y;
-		*/escena.t.posicionar(j, t);
+		*/escena.t.posicionar(px,py);
+		//escena.t.recalculaVertices();
 		//escena.t.draw("Recortar");//.redraw(x, y);
 	}
 	glutPostRedisplay();
